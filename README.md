@@ -1,6 +1,6 @@
 # Homebrew Tap for APM CLI
 
-This is the official Homebrew tap for [APM CLI](https://github.com/danielmeppiel/apm-cli).
+This is the official Homebrew tap for [APM CLI](https://github.com/github/apm-cli).
 
 ## What is APM CLI?
 
@@ -11,7 +11,7 @@ This is the official Homebrew tap for [APM CLI](https://github.com/danielmeppiel
 ## Installation
 
 ```bash
-brew tap danielmeppiel/apm-cli
+brew tap github/apm-cli
 brew install apm-cli
 ```
 
@@ -33,6 +33,6 @@ apm run start --param name="Developer"
 
 ## More Information
 
-Visit the [main repository](https://github.com/danielmeppiel/apm-cli) for complete documentation, examples, and guides.
+Visit the [main repository](https://github.com/github/apm-cli) for complete documentation, examples, and guides.
 
 **APM makes AI prompts as shareable and reusable as code packages.**
