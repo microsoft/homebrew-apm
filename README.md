@@ -28,7 +28,7 @@ cd my-hello-world
 
 # Install and run
 apm install
-apm run start --param name="Developer"
+apm run start --param name="<YourGitHubHandle>"
 ```
 
 ## More Information
