@@ -33,14 +33,14 @@ jobs:
           echo "Linux ARM64 SHA: $LINUX_ARM64_SHA"
           
           # Generate the formula from template
-          cp Formula/apm-cli.rb.template Formula/apm-cli.rb
+          cp Formula/apm.rb.template Formula/apm.rb
           
           # Replace template placeholders with actual values
-          sed -i "s/{{VERSION}}/$CLEAN_VERSION/g" Formula/apm-cli.rb
-          sed -i "s/{{DARWIN_ARM64_SHA}}/$DARWIN_ARM64_SHA/g" Formula/apm-cli.rb
-          sed -i "s/{{DARWIN_X86_64_SHA}}/$DARWIN_X86_64_SHA/g" Formula/apm-cli.rb
-          sed -i "s/{{LINUX_X86_64_SHA}}/$LINUX_X86_64_SHA/g" Formula/apm-cli.rb
-          sed -i "s/{{LINUX_ARM64_SHA}}/$LINUX_ARM64_SHA/g" Formula/apm-cli.rb
+          sed -i "s/{{VERSION}}/$CLEAN_VERSION/g" Formula/apm.rb
+          sed -i "s/{{DARWIN_ARM64_SHA}}/$DARWIN_ARM64_SHA/g" Formula/apm.rb
+          sed -i "s/{{DARWIN_X86_64_SHA}}/$DARWIN_X86_64_SHA/g" Formula/apm.rb
+          sed -i "s/{{LINUX_X86_64_SHA}}/$LINUX_X86_64_SHA/g" Formula/apm.rb
+          sed -i "s/{{LINUX_ARM64_SHA}}/$LINUX_ARM64_SHA/g" Formula/apm.rb
           
           echo "✅ Formula updated successfully"
 
@@ -48,11 +48,11 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add Formula/apm-cli.rb
+          git add Formula/apm.rb
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update APM CLI to v${{ github.event.client_payload.release.version }}"
+            git commit -m "Update APM to v${{ github.event.client_payload.release.version }}"
             git push
             echo "✅ Formula update pushed to tap repository"
           fi
