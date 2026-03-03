@@ -1,8 +1,8 @@
-# Homebrew Tap for APM CLI
+# Homebrew Tap for APM
 
-This is the official Homebrew tap for [APM CLI](https://github.com/github/apm-cli).
+This is the official Homebrew tap for [APM](https://github.com/microsoft/apm).
 
-## What is APM CLI?
+## What is APM?
 
 **The NPM for AI-Native Development** - Natural language in Markdown is the new scripting language. Now you can build, package, share, and run Markdown agentic prompts and workflows across any LLM runtime.
 
@@ -11,8 +11,7 @@ This is the official Homebrew tap for [APM CLI](https://github.com/github/apm-cl
 ## Installation
 
 ```bash
-brew tap github/apm-cli
-brew install apm-cli
+brew install microsoft/apm/apm
 ```
 
 ## Quick Start
@@ -33,6 +32,6 @@ apm run start --param name="<YourGitHubHandle>"
 
 ## More Information
 
-Visit the [main repository](https://github.com/github/apm-cli) for complete documentation, examples, and guides.
+Visit the [main repository](https://github.com/microsoft/apm) for complete documentation, examples, and guides.
 
 **APM makes AI prompts as shareable and reusable as code packages.**

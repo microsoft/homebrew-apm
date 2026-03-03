@@ -1,18 +1,21 @@
-class AwdCli < Formula
+class Apm < Formula
   desc "Agent Primitives Manager (APM): The NPM for AI-Native Development"
-  homepage "https://github.com/github/apm-cli"
-  version "0.0.9"
+  homepage "https://github.com/microsoft/apm"
+  version "0.7.4"
   license "MIT"
 
   if Hardware::CPU.arm? && OS.mac?
-    url "https://github.com/github/apm-cli/releases/download/v#{version}/apm-darwin-arm64.tar.gz"
-    sha256 "9ea4b50236f55c5597f324de53716ec4fad9f6a73e4b39f0d6e3a8da7b17d016"
+    url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-darwin-arm64.tar.gz"
+    sha256 "822e680f06ffae878b807c8303bf0856ed5e2d3b7f7f8959b4482699530d2d8f"
   elsif Hardware::CPU.intel? && OS.mac?
-    url "https://github.com/github/apm-cli/releases/download/v#{version}/apm-darwin-x86_64.tar.gz"
-    sha256 "c025884c37231c17ea46cfacc53a99f7ff9b701bd5257cf0682db7e6bb6f01d0"
-  elsif OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/github/apm-cli/releases/download/v#{version}/apm-linux-x86_64.tar.gz"
-    sha256 "bbda1ba04afd171ab2104e90845227754b3fcc896929b31ca78aee8253bcae32"
+    url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-darwin-x86_64.tar.gz"
+    sha256 "a835cd5f90bd0e500acfb8096531ad9245fb8704c02380f0afcdee3928c1a8b0"
+  elsif Hardware::CPU.arm? && OS.linux?
+    url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-linux-arm64.tar.gz"
+    sha256 "7b543e4daf7bc029513f9eb7bbfa4240b3e1f748ffa08f243ab2f7532e7adb53"
+  elsif Hardware::CPU.intel? && OS.linux?
+    url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-linux-x86_64.tar.gz"
+    sha256 "adf8f6ba5a8694e998fbbaf1aa7490f5bb17c75dc1683ca5825e02c325fb96cf"
   end
 
   def install
