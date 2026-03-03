@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     
     steps:
       - name: Checkout repository
@@ -44,15 +45,31 @@ jobs:
           
           echo "✅ Formula updated successfully"
 
-      - name: Commit and push changes
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          VERSION="${{ github.event.client_payload.release.version }}"
+          CLEAN_VERSION="${VERSION#v}"
+          BRANCH="formula/v${CLEAN_VERSION}"
+          
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add Formula/apm.rb
+          
           if git diff --staged --quiet; then
             echo "No changes to commit"
-          else
-            git commit -m "Update APM to v${{ github.event.client_payload.release.version }}"
-            git push
-            echo "✅ Formula update pushed to tap repository"
+            exit 0
           fi
+          
+          git checkout -b "$BRANCH"
+          git commit -m "Update APM formula to v${CLEAN_VERSION}"
+          git push origin "$BRANCH"
+          
+          gh pr create \
+            --title "Update APM formula to v${CLEAN_VERSION}" \
+            --body "Automated formula update triggered by APM release v${CLEAN_VERSION}." \
+            --base main \
+            --head "$BRANCH"
+          
+          echo "✅ Pull request created for formula update"
