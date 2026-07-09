@@ -1,0 +1,95 @@
+name: Poll upstream release
+
+# Self-contained daily poller. Checks microsoft/apm for a newer published
+# release and, when this tap's formula is behind, commits the bump straight
+# to the default branch.
+#
+# Uses ONLY the tap's built-in GITHUB_TOKEN:
+#   - microsoft/apm is public, so reading its releases needs no special auth.
+#   - The formula lives in THIS repo, so contents:write covers the commit.
+# There is no cross-repo PAT, no GitHub App, and nothing to rotate.
+#
+# Why a direct commit (not a PR): the 'Microsoft' org disables "Allow GitHub
+# Actions to create and approve pull requests", so GITHUB_TOKEN cannot open a
+# PR. A Homebrew tap only needs the formula on its default branch (a checksum
+# bump already validated upstream needs no review gate), so we push directly.
+# This is the standard Homebrew-tap autobump pattern.
+
+on:
+  schedule:
+    - cron: "17 8 * * *"  # daily at 08:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@v4
+
+      - name: Resolve current vs latest version
+        id: v
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # releases/latest excludes drafts and prereleases by design.
+          LATEST="$(gh api repos/microsoft/apm/releases/latest --jq '.tag_name')"
+          LATEST="${LATEST#v}"
+          CURRENT="$(sed -n 's/^  version "\(.*\)"/\1/p' Formula/apm.rb | head -n1)"
+          echo "Current: ${CURRENT:-<none>} | Latest: ${LATEST:-<none>}"
+          if [ -z "$LATEST" ]; then
+            echo "Could not resolve upstream latest release." >&2
+            exit 1
+          fi
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          if [ "$LATEST" = "$CURRENT" ]; then
+            echo "up_to_date=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "up_to_date=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Render formula from template
+        if: steps.v.outputs.up_to_date == 'false'
+        env:
+          VERSION: ${{ steps.v.outputs.latest }}
+        run: |
+          set -euo pipefail
+          base="https://github.com/microsoft/apm/releases/download/v${VERSION}"
+          fetch_sha() { curl -fsSL "$base/apm-$1.tar.gz.sha256" | cut -d' ' -f1; }
+          DARWIN_ARM64_SHA="$(fetch_sha darwin-arm64)"
+          DARWIN_X86_64_SHA="$(fetch_sha darwin-x86_64)"
+          LINUX_X86_64_SHA="$(fetch_sha linux-x86_64)"
+          LINUX_ARM64_SHA="$(fetch_sha linux-arm64)"
+          for n in DARWIN_ARM64_SHA DARWIN_X86_64_SHA LINUX_X86_64_SHA LINUX_ARM64_SHA; do
+            if [ -z "${!n}" ]; then echo "Missing checksum: $n" >&2; exit 1; fi
+          done
+          cp Formula/apm.rb.template Formula/apm.rb
+          sed -i "s/{{VERSION}}/$VERSION/g" Formula/apm.rb
+          sed -i "s/{{DARWIN_ARM64_SHA}}/$DARWIN_ARM64_SHA/g" Formula/apm.rb
+          sed -i "s/{{DARWIN_X86_64_SHA}}/$DARWIN_X86_64_SHA/g" Formula/apm.rb
+          sed -i "s/{{LINUX_X86_64_SHA}}/$LINUX_X86_64_SHA/g" Formula/apm.rb
+          sed -i "s/{{LINUX_ARM64_SHA}}/$LINUX_ARM64_SHA/g" Formula/apm.rb
+          git --no-pager diff --stat
+
+      - name: Commit bump to default branch
+        if: steps.v.outputs.up_to_date == 'false'
+        env:
+          VERSION: ${{ steps.v.outputs.latest }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/apm.rb; then
+            echo "Template render produced no change -- nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/apm.rb
+          git commit -m "Update APM formula to v${VERSION}"
+          # Rebase-safe push in case another run landed first.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "Committed formula bump to ${GITHUB_REF_NAME}: v${VERSION}"
