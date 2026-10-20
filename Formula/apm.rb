@@ -1,21 +1,21 @@
 class Apm < Formula
   desc "Agent Package Manager (APM): The NPM for AI-Native Development"
   homepage "https://github.com/microsoft/apm"
-  version "0.33.0"
+  version "0.34.0"
   license "MIT"
 
   if Hardware::CPU.arm? && OS.mac?
     url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-darwin-arm64.tar.gz"
-    sha256 "312002dca9e1410557bc0da414b7d9bc8438c905c6573e81c06370fde9910857"
+    sha256 "030b381825799333ac60a369aaf021ffc9f9e92558b375feec656c42e50e8e5a"
   elsif Hardware::CPU.intel? && OS.mac?
     url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-darwin-x86_64.tar.gz"
-    sha256 "a192f5915b44dac0f7aed9574a98e34e7cda96607760999e4601d1fde773c4f9"
+    sha256 "55b4ab44eaca6f3a56f59a8e9ca84082c9ed3333a76fe255d6bc62c2a14678a9"
   elsif Hardware::CPU.arm? && OS.linux?
     url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-linux-arm64.tar.gz"
-    sha256 "ac40dd0efd1af35a56847beedde96854530d2f54851e026728da017d3af827f8"
+    sha256 "bf355449cbb74b960e3a6ebe851a35ec2c1df6f5178fbb36b90c5a3a015d2c2a"
   elsif Hardware::CPU.intel? && OS.linux?
     url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-linux-x86_64.tar.gz"
-    sha256 "e6374402c74318f7c8bef97a90d8572d049fdab0dc3871492c6b0647ae9e881f"
+    sha256 "4487af55604b4fa6f4587f3ee6e833b44ce99c491f11069790e4e13e297cde8c"
   end
 
   def install
