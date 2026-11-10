@@ -11,3 +11,21 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## License
+
+APM-owned tap content is licensed under [Apache-2.0](LICENSE).
+[NOTICE](NOTICE) preserves Microsoft attribution and the historical MIT notice.
+Previously published MIT revisions and third-party material retain their
+applicable terms. Redistributors should retain the applicable license and notices.
+
+The formula's `license` describes the APM release it installs, not this tap.
+The current v0.35.0 payload remains MIT, so both `Formula/apm.rb` and
+`Formula/apm.rb.template` still declare MIT.
+
+Before the daily upstream poller can consume the first Apache-licensed APM
+release, coordinate the formula and template license update with that release.
+Verify the actual release's LICENSE and NOTICE, update the template and rendered
+formula together for the selected version, and retain the normal checksum
+verification. The poller currently substitutes only versions and checksums; it
+does not discover license changes. Do not relabel an older MIT payload.
