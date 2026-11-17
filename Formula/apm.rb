@@ -2,7 +2,7 @@ class Apm < Formula
   desc "Agent Package Manager (APM): The NPM for AI-Native Development"
   homepage "https://github.com/microsoft/apm"
   version "0.36.0"
-  license "MIT"
+  license "Apache-2.0"
 
   if Hardware::CPU.arm? && OS.mac?
     url "https://github.com/microsoft/apm/releases/download/v#{version}/apm-darwin-arm64.tar.gz"
